@@ -178,6 +178,7 @@ public class SshCommands {
 	public void execute(boolean local) throws JSchException, IOException {
 		JSch jsch = new JSch();
 		LocalCommands comandos=null;
+		Session session = null;
 		
 		if (local)
 		{
@@ -186,14 +187,15 @@ public class SshCommands {
 		else 
 		{
 			log.info("Connecting to Virtuoso host...");
+			session = jsch.getSession(user, host, 22);
+			session.setPassword(password);
+			session.setConfig("StrictHostKeyChecking", "no");
+			session.connect(10 * 1000);
+			
+			log.info("Connected");
+
 		}
 						
-		Session session = jsch.getSession(user, host, 22);
-		session.setPassword(password);
-		session.setConfig("StrictHostKeyChecking", "no");
-		session.connect(10 * 1000);
-		
-		log.info("Connected");
 
 		Channel channel = null;
 		
