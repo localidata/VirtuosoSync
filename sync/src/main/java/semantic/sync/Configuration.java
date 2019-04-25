@@ -10,6 +10,9 @@ public class Configuration {
 	private String virtuosoPort;
 	private String virtuosoUser;
 	private String virtuosoPassword;
+	private String virtuosoPathToIsql;
+	
+	
 	public String getCatalogURL() {
 		return catalogURL;
 	}
@@ -57,6 +60,12 @@ public class Configuration {
 	}
 	public void setVirtuosoPassword(String virtuosoPassword) {
 		this.virtuosoPassword = virtuosoPassword;
+	}
+	public String getVirtuosoPathToIsql() {
+		return virtuosoPathToIsql;
+	}
+	public void setVirtuosoPathToIsql(String virtuosoPathToIsql) {
+		this.virtuosoPathToIsql = virtuosoPathToIsql;
 	}
 	
 	

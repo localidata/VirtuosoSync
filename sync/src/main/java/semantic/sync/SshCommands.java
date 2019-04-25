@@ -35,6 +35,7 @@ public class SshCommands {
 	private ArrayList<String> commandsType;
 	private ArrayList<String> uploads;
 
+	private String virtuosoPathToIsql;
 	private String virtuosoPort;
 	private String virtuosoUser;
 	private String virtuosoPassword;
@@ -50,7 +51,8 @@ public class SshCommands {
 		virtuosoPort = "";
 		virtuosoUser = "";
 		virtuosoPassword = "";
-	}
+		virtuosoPathToIsql = ""; 
+	 }
 
 	public SshCommands(Configuration conf) {
 		user = conf.getUser();
@@ -63,6 +65,7 @@ public class SshCommands {
 		virtuosoPort = conf.getVirtuosoPort();
 		virtuosoUser = conf.getVirtuosoUser();
 		virtuosoPassword = conf.getVirtuosoPassword();
+		virtuosoPathToIsql = conf.getVirtuosoPathToIsql();
 	}
 	
 	public String getEldaURI() {
@@ -148,6 +151,16 @@ public class SshCommands {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
+	
+
+	public String getVirtuosoPathToIsql() {
+		return virtuosoPathToIsql;
+	}
+
+	public void setVirtuosoPathToIsql(String virtuosoPathToIsql) {
+		this.virtuosoPathToIsql = virtuosoPathToIsql;
+	}
 
 	public void addCommand(String command, String type) {
 		if ((commands != null) && (commandsType != null)) {
@@ -159,10 +172,15 @@ public class SshCommands {
 	}
 
 	public void execute() throws JSchException, IOException {
+		execute(false);
+	}
+	
+	public void execute(boolean local) throws JSchException, IOException {
 		JSch jsch = new JSch();
+		LocalCommands comandos=null;
 		
 		log.info("Connecting to Virtuoso host...");
-		
+						
 		Session session = jsch.getSession(user, host, 22);
 		session.setPassword(password);
 		session.setConfig("StrictHostKeyChecking", "no");
@@ -171,25 +189,42 @@ public class SshCommands {
 		log.info("Connected");
 
 		Channel channel = null;
+		
+		if (local)
+		{
+			comandos=new LocalCommands();
+		}
 				
 		for (int i = 0; i < commands.size(); i++) {
 
-			channel = session.openChannel("exec");
-
-			String command = prepareCommand(commands.get(i), commandsType.get(i));
-			String logCommand= prepareLogCommand(commands.get(i), commandsType.get(i));
-			log.info("Command:" + logCommand);
-
-			((ChannelExec) channel).setCommand(command);
-			channel.setInputStream(null);
-			((ChannelExec) channel).setErrStream(System.err);
-			InputStream in = channel.getInputStream();
-
-			channel.connect();
-
-			executionResponse(channel, in);
+			if (local)
+			{
+				String command = prepareCommand(commands.get(i), commandsType.get(i));
+				String logCommand= prepareLogCommand(commands.get(i), commandsType.get(i));
+				log.info("Command:" + logCommand);
+				
+				comandos.run(command);
+				
+			}			
+			else 
+			{
+				channel = session.openChannel("exec");
+	
+				String command = prepareCommand(commands.get(i), commandsType.get(i));
+				String logCommand= prepareLogCommand(commands.get(i), commandsType.get(i));
+				log.info("Command:" + logCommand);
+	
+				((ChannelExec) channel).setCommand(command);
+				channel.setInputStream(null);
+				((ChannelExec) channel).setErrStream(System.err);
+				InputStream in = channel.getInputStream();
+	
+				channel.connect();
+	
+				executionResponse(channel, in);
 			
 			System.out.println("Command: " + logCommand + " finished");
+			}
 		}
 		channel.disconnect();
 		session.disconnect();
@@ -202,7 +237,7 @@ public class SshCommands {
 		String commando = "";
 
 		if (type.toLowerCase().equals("virtuoso")) {
-			commando = "/usr/local/virtuoso-opensource/bin/isql-v  "+this.getHost()+":" + this.getVirtuosoPort() + " " + this.getVirtuosoUser() + " " + this.getVirtuosoPassword() + "  exec=\"" + command + "\";";
+			commando =this.getVirtuosoPathToIsql()+" "+this.getHost()+":" + this.getVirtuosoPort() + " " + this.getVirtuosoUser() + " " + this.getVirtuosoPassword() + "  exec=\"" + command + "\";";
 		} else if (type.toLowerCase().equals("system")) {
 			commando = command;
 		}
@@ -214,7 +249,7 @@ public class SshCommands {
 		String commando = "";
 
 		if (type.toLowerCase().equals("virtuoso")) {
-			commando = "/usr/local/virtuoso-opensource/bin/isql-v  "+this.getHost()+":" + this.getVirtuosoPort() + " " + this.getVirtuosoUser() + "  exec=\"" + command + "\";";
+			commando = this.getVirtuosoPathToIsql()+"  "+this.getHost()+":" + this.getVirtuosoPort() + " " + this.getVirtuosoUser() + "  exec=\"" + command + "\";";
 		} else if (type.toLowerCase().equals("system")) {
 			commando = command;
 		}
@@ -276,6 +311,7 @@ public class SshCommands {
 		this.setVirtuosoUser(prop.getProperty("virtuosoUser"));
 		this.setVirtuosoPassword(prop.getProperty("virtuosoPassword"));
 		this.setVirtuosoPort(prop.getProperty("virtuosoPort"));
+		this.setVirtuosoPathToIsql(prop.getProperty("virtuosoPathToIsql"));
 		
 		this.setEldaURI(prop.getProperty("eldaURI"));
 

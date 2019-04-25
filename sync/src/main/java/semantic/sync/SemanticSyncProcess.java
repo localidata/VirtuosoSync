@@ -231,10 +231,18 @@ public class SemanticSyncProcess
 	        File catalogFile = new File(RdfFilePath);
 	        File hashCatalogFile = new File(TempFilePath);
 	        catalogFile.renameTo(hashCatalogFile);
+	        
+	        if ((app.getConfiguration().getHost()!=null)&&(!app.getConfiguration().getHost().equals("")))
+	        {
+	        	commandos.readCommandsFile("commands.properties");
+				commandos.execute();		
+				commandos.clearCache();	
+	        }
+	        
+	        
+	        
 	        	
-			commandos.readCommandsFile("commands.properties");
-			commandos.execute();		
-			commandos.clearCache();
+			
 			
 			log.info("Removing hash to catalog file: "+catalogFile);
 			hashCatalogFile.renameTo(catalogFile);
