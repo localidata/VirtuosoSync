@@ -44,6 +44,7 @@ public class SemanticSyncProcess
 		configuration.setVirtuosoUser(prop.getProperty("virtuosoUser"));
 		configuration.setVirtuosoPassword(prop.getProperty("virtuosoPassword"));
 		configuration.setVirtuosoPort(prop.getProperty("virtuosoPort"));
+		configuration.setVirtuosoPathToIsql(prop.getProperty("virtuosoPathToIsql"));
 		
 		configuration.setEldaURI(prop.getProperty("eldaURI"));
 	}
