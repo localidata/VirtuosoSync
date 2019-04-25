@@ -177,6 +177,8 @@ public class SemanticSyncProcess
 	
     public static void main( String[] args )
     {
+    	boolean downloadCatalog=true;
+    	boolean local=false;
     	File logF = new File("log4j.properties");   
     	int status=0;
 
@@ -219,33 +221,38 @@ public class SemanticSyncProcess
         	}
         }else {
         	log.info("Initial file to load ommited");
+        	downloadCatalog=false;
         }
                
         try
-        {        	
-	        Date actualDate = new Date();
-	        String TempFilePath = "download"+File.separator+"catalog"+actualDate.hashCode()+".rdf";
-	        
-	        log.info("Adding hash to catalog file: "+TempFilePath);
-	        
-	        File catalogFile = new File(RdfFilePath);
-	        File hashCatalogFile = new File(TempFilePath);
-	        catalogFile.renameTo(hashCatalogFile);
-	        
+        {       
+        	String TempFilePath="";
+        	File catalogFile=null;
+	        File hashCatalogFile=null;
+        	if (downloadCatalog)
+        	{        	
+		        Date actualDate = new Date();
+		        TempFilePath = "download"+File.separator+"catalog"+actualDate.hashCode()+".rdf";		        
+		        log.info("Adding hash to catalog file: "+TempFilePath);		        
+		        catalogFile = new File(RdfFilePath);
+		        hashCatalogFile = new File(TempFilePath);
+		        catalogFile.renameTo(hashCatalogFile);	        
+        	}
+        	
 	        if ((app.getConfiguration().getHost()!=null)&&(!app.getConfiguration().getHost().equals("")))
 	        {
-	        	commandos.readCommandsFile("commands.properties");
-				commandos.execute();		
-				commandos.clearCache();	
-	        }
-	        
-	        
-	        
+	        	local=true;
+	        }  
 	        	
+	        commandos.readCommandsFile("commands.properties");
+			commandos.execute(local);		
+			commandos.clearCache();	
 			
-			
-			log.info("Removing hash to catalog file: "+catalogFile);
-			hashCatalogFile.renameTo(catalogFile);
+			if (downloadCatalog)
+        	{   
+				log.info("Removing hash to catalog file: "+catalogFile);
+				hashCatalogFile.renameTo(catalogFile);
+        	}
         }
         catch (Exception e)
         {
