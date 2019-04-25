@@ -241,8 +241,10 @@ public class SemanticSyncProcess
         	
 	        if ((app.getConfiguration().getHost()!=null)&&(!app.getConfiguration().getHost().equals("")))
 	        {
+	        	local=false;
+	        } else {
 	        	local=true;
-	        }  
+	        }
 	        	
 	        commandos.readCommandsFile("commands.properties");
 			commandos.execute(local);		

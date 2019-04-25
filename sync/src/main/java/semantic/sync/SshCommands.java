@@ -179,7 +179,14 @@ public class SshCommands {
 		JSch jsch = new JSch();
 		LocalCommands comandos=null;
 		
-		log.info("Connecting to Virtuoso host...");
+		if (local)
+		{
+			log.info("Running in local mode...");
+		}
+		else 
+		{
+			log.info("Connecting to Virtuoso host...");
+		}
 						
 		Session session = jsch.getSession(user, host, 22);
 		session.setPassword(password);
