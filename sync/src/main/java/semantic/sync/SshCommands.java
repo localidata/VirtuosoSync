@@ -385,15 +385,19 @@ public class SshCommands {
 	
 	public void clearCache()  {
 		
-		String url=eldaURI+"/control/clear-cache";
-		try {
-			log.info("Calling "+eldaURI+" to clear cache");
-			Utils.processURLPost(url, "", null, "");
-			log.info("cache cleared");
-		} catch (IOException e) {
-			log.error("Error clearing cache",e);			
-		}
+		if ((eldaURI!=null)&&(!eldaURI.equals("")))
+		{
 		
+			String url=eldaURI+"/control/clear-cache";
+			try {
+				log.info("Calling "+eldaURI+" to clear cache");
+				Utils.processURLPost(url, "", null, "");
+				log.info("cache cleared");
+			} catch (IOException e) {
+				log.error("Error clearing cache",e);			
+			}
+		
+		}
 	}
 	
 
