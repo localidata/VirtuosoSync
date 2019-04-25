@@ -54,7 +54,8 @@ public class SemanticSyncProcess
     	File downloadFile = new File(RdfFilePath);
     	File downloadFileTemp = new File("download"+File.separator+"catalogTemp.rdf");
     	boolean fileOpStatus=false;
-    	int status=0;
+    	int status=0;   	
+    	
     	
     	if (configuration.getCatalogURL().contains("http"))
     	{
@@ -206,29 +207,37 @@ public class SemanticSyncProcess
         	return;
         }
         
-        System.out.println("Getting file...");
-        status=app.dowloadOrCopyFile();
-        if (status<0)
-        	return;
-        //System.out.println("Downloaded");
+        
+        
+        if ((app.getConfiguration().getCatalogURL()!=null)&&(!app.getConfiguration().getCatalogURL().equals("")))
+        {
+        	log.info("Getting file...");
+        	status=app.dowloadOrCopyFile();
+        	if (status<0)
+        	{
+        		return;
+        	}
+        }else {
+        	log.info("Initial file to load ommited");
+        }
                
         try
         {        	
-        Date actualDate = new Date();
-        String TempFilePath = "download"+File.separator+"catalog"+actualDate.hashCode()+".rdf";
-        
-        log.info("Adding hash to catalog file: "+TempFilePath);
-        
-        File catalogFile = new File(RdfFilePath);
-        File hashCatalogFile = new File(TempFilePath);
-        catalogFile.renameTo(hashCatalogFile);
-        	
-		commandos.readCommandsFile("commands.properties");
-		commandos.execute();		
-		commandos.clearCache();
-		
-		log.info("Removing hash to catalog file: "+catalogFile);
-		hashCatalogFile.renameTo(catalogFile);
+	        Date actualDate = new Date();
+	        String TempFilePath = "download"+File.separator+"catalog"+actualDate.hashCode()+".rdf";
+	        
+	        log.info("Adding hash to catalog file: "+TempFilePath);
+	        
+	        File catalogFile = new File(RdfFilePath);
+	        File hashCatalogFile = new File(TempFilePath);
+	        catalogFile.renameTo(hashCatalogFile);
+	        	
+			commandos.readCommandsFile("commands.properties");
+			commandos.execute();		
+			commandos.clearCache();
+			
+			log.info("Removing hash to catalog file: "+catalogFile);
+			hashCatalogFile.renameTo(catalogFile);
         }
         catch (Exception e)
         {
