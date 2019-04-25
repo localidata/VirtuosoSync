@@ -232,11 +232,13 @@ public class SshCommands {
 	
 				executionResponse(channel, in);
 			
-			System.out.println("Command: " + logCommand + " finished");
+				log.info("Command: " + logCommand + " finished");
+				
+				channel.disconnect();
+				session.disconnect();
 			}
 		}
-		channel.disconnect();
-		session.disconnect();
+		
 
 		log.info("ends of execution");
 
