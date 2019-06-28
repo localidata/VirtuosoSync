@@ -235,9 +235,15 @@ public class SshCommands {
 				log.info("Command: " + logCommand + " finished");
 				
 				channel.disconnect();
-				session.disconnect();
+				
 			}
 		}
+		
+		if (local==false)
+		{
+			session.disconnect();
+		}
+		
 		
 
 		log.info("ends of execution");
