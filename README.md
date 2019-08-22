@@ -1,2 +1,16 @@
 # VirtuosoSync
-Pequeño programa de consola para cargar Virtuoso Periodicamente
+Pequeño programa de consola para cargar Virtuoso (https://virtuoso.openlinksw.com/) Periodicamente
+
+# Autores
+ - Juan Carlos Ballesteros (Localidata) 
+ - Oscar Corcho (UPM, Localidata)
+
+# Licencia
+
+Copyright 2018 Localidata
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
